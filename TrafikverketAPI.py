@@ -13,7 +13,7 @@ def getTrafficFlowData(req, countyNo):
     include1 = ET.SubElement(query, 'INCLUDE')
     include1.text = 'AverageVehicleSpeed'
     include2 = ET.SubElement(query, 'INCLUDE')
-    include2.text = 'Measurement.MeasureTime'
+    include2.text = 'MeasurementTime'
     include3 = ET.SubElement(query, 'INCLUDE')
     include3.text = 'MeasurementOrCalculationPeriod'
     include4 = ET.SubElement(query, 'INCLUDE')
@@ -25,7 +25,7 @@ def getTrafficFlowData(req, countyNo):
     include7 = ET.SubElement(query, 'INCLUDE')
     include7.text = 'SpecificLane'
     include8 = ET.SubElement(query, 'INCLUDE')
-    include8.text = 'VehicleFLowRate'
+    include8.text = 'VehicleFlowRate'
     ET.dump(req)
     return req
 
@@ -54,15 +54,14 @@ def generateRequest(developer_key, reqType, condition):
         return getWeatherStationData(req, condition)
 
     if reqType == 2:
-        #TODO: return getTrafficFlowData()
-        pass
+        return getTrafficFlowData(req, condition)
     return 0
 
 def init_arg_parser():
     parser = argparse.ArgumentParser(description='use trafikverket api to get traffic and road information')
-    parser.add_argument('reqType', choices=range(1,2), type=int, nargs=1,
+    parser.add_argument('reqType', choices=range(1,3), type=int, nargs=1,
     help='the request type: 1 = weather, 2 = traffic_flow')
-    parser.add_argument('--condition', dest='condition', choices=range(1,23), type=int, help='query filter')
+    parser.add_argument('--condition', dest='condition', choices=range(1,24), type=int, help='query filter')
     parser.add_argument('--method', dest='method', choices=['get', 'stream'], help='choose method of getting the data')
     return parser
 
