@@ -29,20 +29,18 @@ def mapNode2Road(node, ways):
     for way in ways:
         iWay = iWay + 1
         nodeList = way[0]
-        print(iWay,': ', nodeList)
+        #print(iWay,': ', nodeList)
         if node in nodeList:
-            print(iWay,': ', node, 'is in ', nodeList)
+            #print(iWay,': ', node, 'is in ', nodeList)
             if 'name' in way[1]:
+                roadName['name'] = way[1].get('name')
                 if 'ref' in way[1]:
                     roadName['ref'] = way[1].get('ref')
-                else:
-                    roadName['name'] = way[1].get('name')
             else:
                 if roadName['name'] == []:
                     roadName['name'] ='no_name_way' 
         else:
             pass
-            #print(node, 'is not in ', nodeList)
     
     return roadName
 
@@ -89,30 +87,23 @@ plt.show()
 
 # map matching
 parsed_osm = parser.load_parse_osmxy(r"E6_Lackareback_map.osm")
-print(parsed_osm.keys())
-print("n Ways: ", len(parsed_osm.get('ways')))
+#print(parsed_osm.keys())
+#print("n Ways: ", len(parsed_osm.get('ways')))
 highways = []
 road_type_set = set()
 for way in parsed_osm.get('ways'):
     if 'highway' in way[1]:
         if way[1].get('highway') not in road_type_set:
             road_type_set.add(way[1].get('highway'))
-        if way[1].get('highway') in ('motoryway'):  # TODO: add other types if needed ('trunk', 'motorway_link', 'motorway_junction')
+        if way[1].get('highway') in ('motorway', 'trunk', 'motorway_link', 'motorway_junction'):  # TODO: add other types if needed ()
             highways.append(way)
 
 print(road_type_set)
 #print(highways)
 print("n highways: ", len(highways))
 #print(parsed_osm.get('ways'))
-#for siteId, siteInfo in sites.items():
-#    closestNode = mapSite2Node(siteInfo, parsed_osm.get('nodes'))
+for siteId, siteInfo in sites.items():
+    closestNode = mapSite2Node(siteInfo, parsed_osm.get('nodes'), highways)
     #print(closestNode)
-#    roadName = mapNode2Road(closestNode, parsed_osm.get('ways'))
-#    print(roadName)
-
-siteInfo = sites.get(5467)
-print(siteInfo)
-closestNode = mapSite2Node(siteInfo, parsed_osm.get('nodes'), highways)
-print('site 5467 has',' closestNode ', closestNode)
-roadName = mapNode2Road(list(closestNode)[0], highways)
-print(roadName)
+    roadName = mapNode2Road(list(closestNode)[0], parsed_osm.get('ways'))
+    print(roadName)
